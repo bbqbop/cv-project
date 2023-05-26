@@ -22,27 +22,70 @@ export default class App extends Component {
     }
   } 
 
-  onChange = (e, subFolder, index = 0) => {
-    const { value, id } = e.target
-   this.setState(prevState => {
-    const updatedArray = [...prevState[subFolder]];
-    const updatedObject = updatedArray[index];
+  handlers = {
+      onChange : (e, section) => {
+        const { value, id: key } = e.target
+        const index = e.target.dataset.idx || 0
+      this.setState(prevState => {
+        const updatedArray = [...prevState[section]];
+        const updatedObject = updatedArray[index];
 
-    updatedObject[id] = {...updatedObject[id], data: value};
+        updatedObject[key] = {...updatedObject[key], data: value};
 
-    updatedArray[index] = updatedObject;
-   }
-   )
-   console.log(this.state)
-  }
+        updatedArray[index] = updatedObject;
+      }
+      )
+      },
+
+      onSubmit: (e) => {
+        const section = e.target.className;
+        const index = e.target.dataset.idx;
+        this.setState(prevState => {
+          const updatedArray = [...prevState[section]]
+          updatedArray.push(section === 'EducationalExperience' ? new EducationEntry() : new JobEntry())
+          updatedArray[index]['_edit'] = false;
+          return {
+            [section]: updatedArray,
+          }
+        })
+      }, 
+
+      onDelete: (index, section) => {
+        this.setState(prevState => {
+          const updatedArray = [...prevState[section]];
+          updatedArray.splice(index, 1);
+          return {
+            [section]: updatedArray,
+          }
+        })
+      },
+
+      onEdit: (index, section) => {
+        this.setState(prevState => {
+          const updatedArray = [...prevState[section]];
+          updatedArray.forEach(entry => entry._edit = false);
+          updatedArray[index]._edit = true;
+
+          return {
+            [section]: updatedArray,
+          }
+        })
+      }
+    }    
 
   render(){
     return (
       <div>
-        <Form data={this.state.PersonalInformation[0]} onChange={this.onChange} section='PersonalInformation' />
-        <Form data={this.state.EducationalExperience[0]} onChange={this.onChange} section='EducationalExperience' />
-        <Form data={this.state.ProfessionalExperience[0]} onChange={this.onChange} section='ProfessionalExperience' />
-
+        <legend>Personal Information</legend>
+        <Form data={this.state.PersonalInformation[0]} section='PersonalInformation' handlers={this.handlers}/>
+        <legend>Education</legend>
+        {this.state.EducationalExperience.map((entry, index) => {
+          return <Form data={entry} section='EducationalExperience' handlers={this.handlers} index={index} key={index}/>
+        })}
+        <legend>Professional Experiences</legend>
+        {this.state.ProfessionalExperience.map((entry, index) => {
+          return <Form data={entry} section='ProfessionalExperience' handlers={this.handlers} index={index} key={index}/>
+        })}
       </div>
     )
   }
@@ -55,15 +98,17 @@ function EducationEntry(){
     Degree: {placeholder: 'Degree', data: ''},
     From: {placeholder: 'From', data: ''},
     To: {placeholder: 'To', data: ''},
+    _edit: true,
   }
 };
 
 function JobEntry(){
   return {
-    Position: {placeholder: 'Position', data: ''},
     Company: {placeholder: 'Company', data: ''},
+    Position: {placeholder: 'Position', data: ''},
     City: {placeholder: 'City', data: ''},
     From: {placeholder: 'From', data: ''},
     To: {placeholder: 'To', data: ''},
+    _edit: true,
   }
 }
