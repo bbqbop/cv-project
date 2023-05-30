@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Form } from './Components/Forms';
 import { Header, Experience, Education } from './Components/CV';
+import './styles.css';
 
 export default class App extends Component {
   constructor(){
@@ -79,27 +80,35 @@ export default class App extends Component {
 
   render(){
     return (
-      <div>
+      <>
+        <div className="header"><h1>CV Creator</h1></div>
         <div className="sideBar">
-          <legend>Personal Information</legend>
-          <Form data={this.state.PersonalInformation[0]} section='PersonalInformation' handlers={this.handlers}/>
-          <legend>Education</legend>
-          {this.state.EducationalExperience.map((entry, index) => {
-            return <Form data={entry} section='EducationalExperience' handlers={this.handlers} index={index} key={index}/>
-          })}
-          <legend>Professional Experiences</legend>
-          {this.state.ProfessionalExperience.map((entry, index) => {
-            return <Form data={entry} section='ProfessionalExperience' handlers={this.handlers} index={index} key={index}/>
-          })}
+          <div className="personalInformation">
+            <legend>Personal Information</legend>
+            <Form data={this.state.PersonalInformation[0]} section='PersonalInformation' handlers={this.handlers}/>
+          </div>
+          <div id='experience' className='section'>
+            <legend>Professional Experiences</legend>
+            {this.state.ProfessionalExperience.map((entry, index) => {
+              return <Form data={entry} section='ProfessionalExperience' handlers={this.handlers} index={index} key={index}/>
+            })}
+          </div>
+          <div id='education' className='section'>
+            <legend>Education</legend>
+            {this.state.EducationalExperience.map((entry, index) => {
+              return <Form data={entry} section='EducationalExperience' handlers={this.handlers} index={index} key={index}/>
+            })}
+          </div>
         </div>
-        <div className="CV">
+        
+        <div className="body">
           <Header data={this.state.PersonalInformation} />
           <div className="CV_body">
             <Experience data={this.state.ProfessionalExperience} />
             <Education data={this.state.EducationalExperience} />
           </div>
         </div>
-      </div>
+      </>
     )
   }
 }

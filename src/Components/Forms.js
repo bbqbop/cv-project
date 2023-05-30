@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPenToSquare, faTrash, faPlus} from '@fortawesome/free-solid-svg-icons';
 
 export class Form extends Component {
-    constructor(props){
-        super(props);
-    }
     render(){
         const { data, section, handlers, index = null} = this.props;
         function handleChange(e) {
@@ -25,12 +24,12 @@ export class Form extends Component {
 
         const keys = Object.keys(data);
         return (
-            <div>
+            <>
                 {data['_edit'] || data['_edit'] === undefined ? (
                     <form className={section} data-idx={index} onSubmit={handleSubmit}>
                         {keys.map(key => {
                             if (key === '_edit'){
-                                return
+                                return null;
                             }
                             return (
                             <Input 
@@ -42,7 +41,9 @@ export class Form extends Component {
                             />
                             )
                         })}
-                        {(section === 'PersonalInformation') || (<button type="submit">Add</button>)}
+                        {(section === 'PersonalInformation') || (<button type="submit">
+                            <FontAwesomeIcon icon={faPlus} />
+                        </button>)}
                     </form>
                 ) : (
                     <Preview 
@@ -52,15 +53,12 @@ export class Form extends Component {
                         handleEdit={handleEdit} 
                         handleDelete={handleDelete}/>
                 )}
-            </div>
+            </>
         )
     }
 }
 
 class Input extends Component{
-    constructor(props){
-        super(props);
-    }
     render() {
         const { prop, id, index, onChange } = this.props;
         const { placeholder, data } = prop; 
@@ -80,16 +78,17 @@ class Input extends Component{
 }
 
 class Preview extends Component {
-    constructor(props){
-        super(props);
-    }
     render() {
         const { data, index, handleDelete, handleEdit } = this.props
         return(
-            <div className="Preview" data-idx={index}>
-                {data}
-                <button onClick={handleEdit}>Edit</button>
-                <button onClick={handleDelete}>Delete</button>
+            <div className="preview" data-idx={index}>
+                <div>{data}</div>
+                <button onClick={handleEdit}>
+                    <FontAwesomeIcon icon={faPenToSquare} />
+                </button>
+                <button onClick={handleDelete}>
+                    <FontAwesomeIcon icon={faTrash} />
+                </button>
             </div>
         )
     }

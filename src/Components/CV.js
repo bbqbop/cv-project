@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEnvelope, faPhone } from '@fortawesome/free-solid-svg-icons';
 
 export class Header extends Component {
     
@@ -8,11 +10,17 @@ export class Header extends Component {
             'Address', 'City', 'ZipCode', 'Country', 'Email', 'PhoneNumber'
         ]
         return(
-            <div className="CVHeader">
+            <div className="CV_header">
               <h1 id="CV_name">{data.FirstName.data} {data.LastName.data}</h1>  
               <h2 id="CV_title">{data.Title.data}</h2>
               <ul className="address">
-                {addressKeys.map((key, index) => <li id={"CV_" + data[key].placeholder} key={index}>{data[key].data}</li>)}
+                {addressKeys.map((key, index) => (
+                <li id={"CV_" + data[key].placeholder} key={index}>
+                  {key === 'Email' ? <FontAwesomeIcon icon={faEnvelope} /> : 
+                   key === 'PhoneNumber' ? <FontAwesomeIcon icon={faPhone} />: null}
+                  {' ' + data[key].data}
+                </li>
+                ))}
               </ul>
               <h2 id={data.placeholder}>{data.Description.data}</h2>
             </div>
