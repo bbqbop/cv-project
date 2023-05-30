@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Form } from './Components/Forms'
+import { Form } from './Components/Forms';
+import { Header, Experience, Education } from './Components/CV';
 
 export default class App extends Component {
   constructor(){
@@ -26,15 +27,18 @@ export default class App extends Component {
       onChange : (e, section) => {
         const { value, id: key } = e.target
         const index = e.target.dataset.idx || 0
-      this.setState(prevState => {
-        const updatedArray = [...prevState[section]];
-        const updatedObject = updatedArray[index];
+        this.setState(prevState => {
+          const updatedArray = [...prevState[section]];
+          const updatedObject = updatedArray[index];
 
-        updatedObject[key] = {...updatedObject[key], data: value};
+          updatedObject[key] = {...updatedObject[key], data: value};
 
-        updatedArray[index] = updatedObject;
-      }
-      )
+          updatedArray[index] = updatedObject;
+          return {
+            [section]: updatedArray,
+          }
+          }
+        )
       },
 
       onSubmit: (e) => {
@@ -76,16 +80,25 @@ export default class App extends Component {
   render(){
     return (
       <div>
-        <legend>Personal Information</legend>
-        <Form data={this.state.PersonalInformation[0]} section='PersonalInformation' handlers={this.handlers}/>
-        <legend>Education</legend>
-        {this.state.EducationalExperience.map((entry, index) => {
-          return <Form data={entry} section='EducationalExperience' handlers={this.handlers} index={index} key={index}/>
-        })}
-        <legend>Professional Experiences</legend>
-        {this.state.ProfessionalExperience.map((entry, index) => {
-          return <Form data={entry} section='ProfessionalExperience' handlers={this.handlers} index={index} key={index}/>
-        })}
+        <div className="sideBar">
+          <legend>Personal Information</legend>
+          <Form data={this.state.PersonalInformation[0]} section='PersonalInformation' handlers={this.handlers}/>
+          <legend>Education</legend>
+          {this.state.EducationalExperience.map((entry, index) => {
+            return <Form data={entry} section='EducationalExperience' handlers={this.handlers} index={index} key={index}/>
+          })}
+          <legend>Professional Experiences</legend>
+          {this.state.ProfessionalExperience.map((entry, index) => {
+            return <Form data={entry} section='ProfessionalExperience' handlers={this.handlers} index={index} key={index}/>
+          })}
+        </div>
+        <div className="CV">
+          <Header data={this.state.PersonalInformation} />
+          <div className="CV_body">
+            <Experience data={this.state.ProfessionalExperience} />
+            <Education data={this.state.EducationalExperience} />
+          </div>
+        </div>
       </div>
     )
   }
@@ -94,8 +107,9 @@ export default class App extends Component {
 function EducationEntry(){
   return {
     SchoolName: {placeholder: 'School Name', data: ''},
-    TitleOfStudy: {placeholder: 'Title of Study', data: ''},
+    City: {placeholder: 'City', data: ''},
     Degree: {placeholder: 'Degree', data: ''},
+    Subject: {placeholder: 'Subject', data: ''},
     From: {placeholder: 'From', data: ''},
     To: {placeholder: 'To', data: ''},
     _edit: true,
@@ -104,8 +118,8 @@ function EducationEntry(){
 
 function JobEntry(){
   return {
-    Company: {placeholder: 'Company', data: ''},
     Position: {placeholder: 'Position', data: ''},
+    Company: {placeholder: 'Company', data: ''},
     City: {placeholder: 'City', data: ''},
     From: {placeholder: 'From', data: ''},
     To: {placeholder: 'To', data: ''},
