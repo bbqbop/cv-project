@@ -7,25 +7,47 @@ export class Header extends Component {
     render(){
         const data = this.props.data[0];
         const addressKeys = [
-            'Address', 'City', 'ZipCode', 'Country', 'Email', 'PhoneNumber'
+            'Address', 'City', 'Country', 'Email', 'PhoneNumber'
         ]
         return(
             <div className="CV_header">
-              <h1 id="CV_name">{data.FirstName.data} {data.LastName.data}</h1>  
-              <h2 id="CV_title">{data.Title.data}</h2>
+              <div className="name">
+                <h1 id="CV_name">{data.FirstName.data} {data.LastName.data}</h1>  
+                <h2 id="CV_title">{data.Title.data}</h2>
+              </div>
               <ul className="address">
                 {addressKeys.map((key, index) => (
                 <li id={"CV_" + data[key].placeholder} key={index}>
-                  {key === 'Email' ? <FontAwesomeIcon icon={faEnvelope} /> : 
-                   key === 'PhoneNumber' ? <FontAwesomeIcon icon={faPhone} />: null}
-                  {' ' + data[key].data}
+                 { key === 'Email' && data.Email.data ? <FontAwesomeIcon icon={faEnvelope} /> : 
+                   key === 'PhoneNumber' && data.PhoneNumber.data ? <FontAwesomeIcon icon={faPhone} />: null}
+                  {' ' + data[key].data} 
+                  {key === 'City' && data.State.data ? (
+                    <>
+                    {', '}
+                    {data.State.data} {data.ZipCode.data}
+                    </>
+                    ) : null }
                 </li>
                 ))}
               </ul>
-              <h2 id={data.placeholder}>{data.Description.data}</h2>
             </div>
         )
     }
+}
+
+export class Description extends Component {
+  render(){
+    const data = this.props.data.data;
+    return (
+      !data ? null :
+      <div className="description">
+        <h1>Description</h1>
+        <div className="description_text">
+          {data}
+        </div>
+      </div>
+    )
+  }
 }
 
 export class Experience extends Component {

@@ -1,13 +1,21 @@
 * {
     box-sizing: border-box;
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    --color: rgb(173, 216, 230);
+    --compColor: rgb(230, 187, 173);   
+    --triadColor1: #e6add8;
+    --triadColor2: #d8e6ad; 
 }
 #root { 
     height: 100%;
     width: 100%;
     display: grid;
-    grid-template-columns: 200px 1fr;
+    grid-template-columns: 300px 1fr;
     grid-template-rows: 80px 1fr;
+}
+
+h1 { 
+    margin: 10px;
 }
 
 .header {
@@ -70,23 +78,62 @@ textarea {
     grid-template-columns: 1fr 30px 30px;
 }
 
+.preview:nth-child(2n){
+    background-color: var(--triadColor2);
+}
+
 /* CV */
 
 .body {
-
+    max-width: 800px;
 }
 
 .CV_header {
-    text-align: center;
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    background-color: var(--color);
+    padding: 15px;
+    border-radius: 5px;
 }
 
 .CV_header ul.address {
+    grid-area: 1/2/2/3;
+    text-align: center;
     list-style: none;
+    align-self: center;
 }
 
 
 .CV_body {
+}
 
+.CV_body h1 {
+    color: var(--triadColor2);
+}
+
+.description_text {
+    text-align: center;
+}
+
+.job_entry, .school_entry {
+    padding: 10px 100px;
+    display: grid;
+    width: 100%;
+    grid-template-columns: 150px 1fr;
+}
+
+.job_dates, .school_dates {
+    grid-area: 1/1/2/2;
+    color: var(--compColor);
+}
+
+.job_info, .school_info {
+    grid-area: 1/1/2/3;
+    width: 100%;
+    text-align: center;
+}
+
+.job_location {
 }
 
 

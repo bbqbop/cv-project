@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Form } from './Components/Forms';
-import { Header, Experience, Education } from './Components/CV';
+import { Header, Description, Experience, Education } from './Components/CV';
 import './styles.css';
 
 export default class App extends Component {
@@ -13,6 +13,7 @@ export default class App extends Component {
         Title: {placeholder:'Title', data: ''}, 
         Address: {placeholder:'Address', data: ''},
         City: {placeholder:'City', data: ''},
+        State: {placeholder:'State', data: ''},
         ZipCode: {placeholder:'Zip Code', data: ''},
         Country: {placeholder:'Country', data: ''},
         Email: {placeholder:'Email', data: ''},
@@ -103,7 +104,9 @@ export default class App extends Component {
         
         <div className="body">
           <Header data={this.state.PersonalInformation} />
+
           <div className="CV_body">
+            <Description data={this.state.PersonalInformation[0].Description} />
             <Experience data={this.state.ProfessionalExperience} />
             <Education data={this.state.EducationalExperience} />
           </div>
