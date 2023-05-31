@@ -1,12 +1,10 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Form } from './Components/Forms';
 import { Header, Description, Experience, Education } from './Components/CV';
 import './styles.css';
 
-export default class App extends Component {
-  constructor(){
-    super()
-    this.state = {
+const App = () => {
+    const [state, setState] = useState({
       PersonalInformation: [{
         FirstName: {placeholder: 'First Name', data: ''},
         LastName: {placeholder: 'Last Name', data: ''},
@@ -22,14 +20,13 @@ export default class App extends Component {
       }],
       EducationalExperience: [new EducationEntry()],
       ProfessionalExperience: [new JobEntry()],
-    }
-  } 
+    }) 
 
-  handlers = {
+  const handlers = {
       onChange : (e, section) => {
         const { value, id: key } = e.target
         const index = e.target.dataset.idx || 0
-        this.setState(prevState => {
+        setState(prevState => {
           const updatedArray = [...prevState[section]];
           const updatedObject = updatedArray[index];
 
@@ -46,7 +43,7 @@ export default class App extends Component {
       onSubmit: (e) => {
         const section = e.target.className;
         const index = e.target.dataset.idx;
-        this.setState(prevState => {
+        setState(prevState => {
           const updatedArray = [...prevState[section]]
           updatedArray.push(section === 'EducationalExperience' ? new EducationEntry() : new JobEntry())
           updatedArray[index]['_edit'] = false;
@@ -57,7 +54,7 @@ export default class App extends Component {
       }, 
 
       onDelete: (index, section) => {
-        this.setState(prevState => {
+        setState(prevState => {
           const updatedArray = [...prevState[section]];
           updatedArray.splice(index, 1);
           return {
@@ -67,7 +64,7 @@ export default class App extends Component {
       },
 
       onEdit: (index, section) => {
-        this.setState(prevState => {
+        setState(prevState => {
           const updatedArray = [...prevState[section]];
           updatedArray.forEach(entry => entry._edit = false);
           updatedArray[index]._edit = true;
@@ -77,43 +74,41 @@ export default class App extends Component {
           }
         })
       }
-    }    
+    }
 
-  render(){
-    return (
-      <>
-        <div className="header"><h1>CV Creator</h1></div>
-        <div className="sideBar">
-          <div className="personalInformation">
-            <legend>Personal Information</legend>
-            <Form data={this.state.PersonalInformation[0]} section='PersonalInformation' handlers={this.handlers}/>
-          </div>
-          <div id='experience' className='section'>
-            <legend>Professional Experiences</legend>
-            {this.state.ProfessionalExperience.map((entry, index) => {
-              return <Form data={entry} section='ProfessionalExperience' handlers={this.handlers} index={index} key={index}/>
-            })}
-          </div>
-          <div id='education' className='section'>
-            <legend>Education</legend>
-            {this.state.EducationalExperience.map((entry, index) => {
-              return <Form data={entry} section='EducationalExperience' handlers={this.handlers} index={index} key={index}/>
-            })}
-          </div>
+  return (
+    <>
+      <div className="header"><h1>CV Creator</h1></div>
+      <div className="sideBar">
+        <div className="personalInformation">
+          <legend>Personal Information</legend>
+          <Form data={state.PersonalInformation[0]} section='PersonalInformation' handlers={handlers}/>
         </div>
-        
-        <div className="body">
-          <Header data={this.state.PersonalInformation} />
+        <div id='experience' className='section'>
+          <legend>Professional Experiences</legend>
+          {state.ProfessionalExperience.map((entry, index) => {
+            return <Form data={entry} section='ProfessionalExperience' handlers={handlers} index={index} key={index}/>
+          })}
+        </div>
+        <div id='education' className='section'>
+          <legend>Education</legend>
+          {state.EducationalExperience.map((entry, index) => {
+            return <Form data={entry} section='EducationalExperience' handlers={handlers} index={index} key={index}/>
+          })}
+        </div>
+      </div>
+      
+      <div className="body">
+        <Header data={state.PersonalInformation} />
 
-          <div className="CV_body">
-            <Description data={this.state.PersonalInformation[0].Description} />
-            <Experience data={this.state.ProfessionalExperience} />
-            <Education data={this.state.EducationalExperience} />
-          </div>
+        <div className="CV_body">
+          <Description data={state.PersonalInformation[0].Description} />
+          <Experience data={state.ProfessionalExperience} />
+          <Education data={state.EducationalExperience} />
         </div>
-      </>
-    )
-  }
+      </div>
+    </>
+  ) 
 }
 
 function EducationEntry(){
@@ -138,3 +133,5 @@ function JobEntry(){
     _edit: true,
   }
 }
+
+export default App;
