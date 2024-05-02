@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { v4 as uuid } from 'uuid';
 import { Form } from './Components/Forms';
 import { Header, Description, Experience, Education } from './Components/CV';
 import './styles.css';
+
 
 const App = () => {
     const [state, setState] = useState({
@@ -18,59 +20,72 @@ const App = () => {
         PhoneNumber: {placeholder:'Phone Number', data: ''},
         Description: {placeholder:'Description', data: ''},
       }],
-      EducationalExperience: [new EducationEntry()],
-      ProfessionalExperience: [new JobEntry()],
+      EducationalExperience: [EducationEntry()],
+      ProfessionalExperience: [JobEntry()],
     }) 
 
   const handlers = {
-      onChange : (e, section) => {
-        const { value, id: key } = e.target
-        const index = e.target.dataset.idx || 0
+      onChange : (e, section, id) => {
+        const { value, id : key } = e.target
         setState(prevState => {
           const updatedArray = [...prevState[section]];
-          const updatedObject = updatedArray[index];
+          const updatedObject = section == 'PersonalInformation' ? updatedArray[0] : updatedArray.find(entry => entry.id == id);
 
           updatedObject[key] = {...updatedObject[key], data: value};
-
-          updatedArray[index] = updatedObject;
+          
+          const newState = {...prevState}
+          newState[section] = updatedArray
           return {
-            [section]: updatedArray,
+            ...newState
           }
           }
         )
       },
 
-      onSubmit: (e) => {
-        const section = e.target.className;
-        const index = e.target.dataset.idx;
+      onSubmit: (section, id) => {
+      
         setState(prevState => {
           const updatedArray = [...prevState[section]]
           updatedArray.push(section === 'EducationalExperience' ? new EducationEntry() : new JobEntry())
-          updatedArray[index]['_edit'] = false;
+          
+          // collapse edit view for form
+          updatedArray.find(entry => {
+            return entry.id == id
+          })._edit = false
+
+          const newState = {...prevState}
+          newState[section] = updatedArray
+
           return {
-            [section]: updatedArray,
+            ...newState
           }
         })
       }, 
 
-      onDelete: (index, section) => {
+      onDelete: (section, id) => {
         setState(prevState => {
           const updatedArray = [...prevState[section]];
-          updatedArray.splice(index, 1);
+          const index = updatedArray.indexOf(updatedArray.find(entry => entry.id == id))
+          if (index != -1) updatedArray.splice(index, 1);
+          
           return {
-            [section]: updatedArray,
+            ...prevState, 
+            [section]: updatedArray
           }
         })
       },
 
-      onEdit: (index, section) => {
+      onEdit: (section, id) => {
         setState(prevState => {
           const updatedArray = [...prevState[section]];
           updatedArray.forEach(entry => entry._edit = false);
-          updatedArray[index]._edit = true;
-
+          const index = updatedArray.indexOf(updatedArray.find(entry => entry.id == id))
+          if (index !== -1){
+            updatedArray[index]._edit = true;
+          }
           return {
-            [section]: updatedArray,
+            ...prevState, 
+            [section]: updatedArray
           }
         })
       }
@@ -86,14 +101,14 @@ const App = () => {
         </div>
         <div id='experience' className='section'>
           <legend>Professional Experiences</legend>
-          {state.ProfessionalExperience.map((entry, index) => {
-            return <Form data={entry} section='ProfessionalExperience' handlers={handlers} index={index} key={index}/>
+          {state.ProfessionalExperience.map((entry) => {
+            return <Form data={entry} section='ProfessionalExperience' handlers={handlers} id={entry.id} key={entry.id}/>
           })}
-        </div>
+        </div> 
         <div id='education' className='section'>
           <legend>Education</legend>
           {state.EducationalExperience.map((entry, index) => {
-            return <Form data={entry} section='EducationalExperience' handlers={handlers} index={index} key={index}/>
+            return <Form data={entry} section='EducationalExperience' handlers={handlers} id={entry.id} key={entry.id}/>
           })}
         </div>
       </div>
@@ -120,6 +135,7 @@ function EducationEntry(){
     From: {placeholder: 'From', data: ''},
     To: {placeholder: 'To', data: ''},
     _edit: true,
+    id: uuid(),
   }
 };
 
@@ -131,6 +147,7 @@ function JobEntry(){
     From: {placeholder: 'From', data: ''},
     To: {placeholder: 'To', data: ''},
     _edit: true,
+    id: uuid(),
   }
 }
 
